@@ -56,7 +56,7 @@ bechdel <- select(bechdel_merge3, tconst, nconst, rating, id, title, year, avera
                   isAdult, runtimeMinutes, genres, Firstname, Lastname, gender)
 write_tsv(bechdel_merge3, 'data/bechdel_merge.tsv')
 write_tsv(bechdel, 'data/bechdel.tsv')
-bechdel_merge3 <- read_tsv('data/bechdel_merge.tsv')
+bechdel_merge3 <- read_tsv('bechdel-test-shiny/data/bechdel_merge.tsv')
 rating_bechdel <- bechdel_merge3 %>%
     group_by(rating,gender) %>%
     count()
@@ -100,6 +100,9 @@ ggplot(bechdel_m,aes(x=year))+
        subtitle='Count of Bechdel test film scores.',
        caption="Data from http://bechdeltest.com")
 
+generes <-distinct(bechdel_merge3,genres) 
+titleType <-distinct(bechdel_merge3, titleType)
+
 ggplot(bechdel_f,aes(x=year))+
   geom_point(stat='count',aes(color=rating))+
   geom_line(stat='count',aes(color=rating))+
@@ -110,6 +113,7 @@ ggplot(bechdel_f,aes(x=year))+
        subtitle='Count of Bechdel test film scores.',
        caption="Data from http://bechdeltest.com")
 
+
 bechdel_merge3 %>%
   ggvis( ~ year, ~ averageRating) %>% 
   layer_points(size = 50, size.hover = 200,
@@ -118,10 +122,10 @@ bechdel_merge3 %>%
   # layer_points(size = 50, size.hover = 200,
   #              fillOpacity = 0.2, fillOpacity.hover = 0.5,
   #              stroke = as.factor(bechdel_merge3$gender), key = ~tconst) 
-  # add_tooltip(bechdel_merge3$title, "hover") 
-  # add_axis("x", title = rating) %>%
-  # add_axis("y", title = year) %>%
-  # add_legend("stroke", title = "gender:", values = c("male", "female")) 
+   add_tooltip(bechdel_merge3$title, "hover") 
+   add_axis("x", title = rating) %>%
+   add_axis("y", title = year) %>%
+   add_legend("stroke", title = "gender:", values = c("male", "female")) 
   # scale_nominal("stroke", domain = c("male", "female"),
   #               range = c("orange", "#aaa")) 
   # set_options(width = 500, height = 500)
@@ -135,8 +139,12 @@ server <- function(input, output) {
   bechdel_merge3 %>%
     ggvis( ~ year, ~ averageRating) %>% 
     layer_points() %>% 
+    add_tooltip(bechdel_merge3()$title, "hover") %>% 
+    add_axis("x", title = 'rating') %>%
+    add_axis("y", title = 'year') %>%
+    add_legend("stroke", title = "gender:", values = c("male", "female")) 
     
-    add_tooltip(function(bechdel_merge3) { paste0("title: ", title) }) %>%
+    add_tooltip(function(bechdel_merge3) { paste0("title: ", bechdel_merge3()$title) }) %>%
      bind_shiny("plot")
 }
 

@@ -11,20 +11,79 @@ library("shiny")
 library("ggvis")
 library("tidyverse")
 library("dplyr")
-bechdel <- read_tsv('data/bechdel.tsv')
+
+# Set up WD
+setwd('/Users/ssharma/code/nss-ds/bechdel_test')
+
+# Read in the cleaned up data file as df.
+bechdel <- read_tsv('bechdel-test-shiny/data/bechdel.tsv')
+glimpse(bechdel)
 
 # Define server logic required to draw a histogram
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
    
-  output$distPlot <- renderPlot({
+  bechdel_sub <- reactive({
+    minRuntime <- input$runtimeMinutes[1]
+    maxRuntime <- input$runtimeMinutes[2]
+    minAvgRate <- input$averageRating[1]
+    maxAvgRate <- input$averageRating[2]
+    minNumVotes <- input$numVotes[1]
+    maxNumVotes <- input$numVotes[2]
+    minyear <- input$year[1]
+    maxyear <- input$year[2]
     
-    # generate bins based on input$bins from ui.R
-    x    <- faithful[, 2] 
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    # Applying the slider filters
+    b <- bechdel %>%
+      filter(
+        runtimeMinutes >= minRuntime,
+        runtimeMinutes <= maxRuntime,
+        averageRating >= minAvgRate,
+        averageRating <= maxAvgRate,
+        numVotes >= minNumVotes,
+        numVotes <= maxNumVotes,
+        year >= minyear,
+        year <= maxyear
+        
+      ) %>%
+      arrange(rating)
     
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    # Optional filtering by genre
+    if (input$genres != "All") {
+      genres <- paste0("%", input$genres, "%")
+      b <- b %>% filter(genres %in% genres)
+    }
+    
+    # Optional filtering by Title Type
+    if (input$titleType != "All") {
+      titleType <- paste0("%", input$titleType, "%")
+      b <- b %>% filter(titleType %in% titleType)
+    }
+    
+    # Optional filtering by gender
+    if (input$gender != "All") {
+      gender <- paste0("%", input$gender, "%")
+      b <- b %>% filter(gender %in% gender)
+    }
+    
+    b <- as.data.frame(b)
     
   })
+  vis <- reactive({
+    # Y variable 
+    yvar_name <- names(axis_vars)[axis_vars == input$yvar]
+    yvar <- prop("y", as.symbol(input$yvar))
+    
+    bechdel_sub %>%
+      ggvis( ~ year, ~ yvar) %>% 
+      layer_points(size := 50, size.hover := 200,
+                   fillOpacity := 0.2, fillOpacity.hover := 0.5,
+                   stroke = ~rating) 
+      
+    
+  })
+  
+  vis %>% bind_shiny("plot")
+  
+  output$n_b_sum <- renderText({ nrow(bechdel_sub())})
   
 })

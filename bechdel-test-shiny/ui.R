@@ -10,24 +10,46 @@
 library(shiny)
 
 # Define UI for application that draws a histogram
-shinyUI(fluidPage(
+shinyUI(
+  fluidPage(
   
   # Application title
-  titlePanel("Old Faithful Geyser Data"),
-  
+  titlePanel("How Hollywood scores on Bechdel Test"),
+  fluidRow(
+    column(3,
+      wellPanel(  
+        h4("Filter"),
   # Sidebar with a slider input for number of bins 
-  sidebarLayout(
-    sidebarPanel(
-       sliderInput("bins",
-                   "Number of bins:",
-                   min = 1,
-                   max = 50,
-                   value = 30)
+  # sidebarLayout(
+    # sidebarPanel(
+      sliderInput("year", "Year Released", 1890, 2018, value = c(1950, 2014)),
+      sliderInput("runtimeMinutes", "Run Time in Mins", 1, 400, value = c(1, 200)),
+      sliderInput("averageRating", "IMDB Rating", 1, 10, value = c(4, 9)),
+      sliderInput("numVotes", "Minimum number of Votes",10, 2000000, value = c(800,800000)),
+      selectInput("gender", "Gender of Director", c("All", "male", "female")),
+      selectInput("genres", "Genre (a movie can have multiple genres)",
+                  c("All", "Action", "Adventure", "Animation", "Biography", "Comedy",
+                    "Crime", "Documentary", "Drama", "Family", "Fantasy", "History",
+                    "Horror", "Music", "Musical", "Mystery", "Romance", "Sci-Fi",
+                    "Short", "Sport", "Thriller", "War", "Western")),
+      selectInput("titleType", "Title Type",c("All", "movie", "short", "video", 
+                  "tvMiniSeries" ,"tvMovie", "tvSeries", "tvShort", "tvEpisode","videoGame"))
+      
     ),
+    wellPanel(
+    selectInput("yvar", "Y-axis variable", axis_vars, selected = "averageRating")
+    ),
+  column(9,
     
     # Show a plot of the generated distribution
-    mainPanel(
-       plotOutput("distPlot")
+    # mainPanel(
+      ggvisOutput("plot"),
+      wellPanel(
+        span("Number of movies selected:",
+             textOutput("n_b_sum"))
+        )
+      )
     )
   )
 ))
+
