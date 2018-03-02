@@ -101,6 +101,8 @@ shinyServer(function(input, output, session) {
   
   vis %>% bind_shiny("plot")
   
-  output$n_b_sum <- renderText({ nrow(bechdel_sub())})
+  output$total <- renderText({ nrow(bechdel_sub())})
+  output$pass <- renderText({ sprintf(((nrow(bechdel_sub() %>% filter(rating == 3))/nrow(bechdel_sub())) * 100), fmt='%.0f') })
+  output$fail <- renderText({ sprintf(((nrow(bechdel_sub() %>% filter(rating < 3))/nrow(bechdel_sub())) * 100), fmt='%.0f') })
   
 })

@@ -43,8 +43,12 @@ shinyUI(
     # mainPanel(
       ggvisOutput("plot"),
       wellPanel(
-        span("Number of movies selected:",
-             textOutput("n_b_sum"))
+        span("Total movies selected:",
+             textOutput("total")),
+        span("Total movies passing:",
+             textOutput("pass")),
+        span("Total movies failing:",
+             textOutput("fail"))
         )
       )
     
