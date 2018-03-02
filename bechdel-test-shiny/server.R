@@ -63,16 +63,38 @@ shinyServer(function(input, output, session) {
     }
     
     b <- as.data.frame(b)
-    
   })
+  
+  b_tooltip <- function(x) {
+    reactive({print(x$id)})
+    if(is.null(x)) return(NULL)
+    if (is.null(x$id)) return(NULL)
+    
+    movie <- bechdel[bechdel$id == x$id, ]
+    paste0("<b>", movie$title, "</b><br>",
+           movie$year, "<br>",
+           "Bechdel Score: ", movie$rating,"<br>",
+           "Director: ", movie$Firstname, ' ', movie$Lastname
+    )
+  }
+  
   vis <- reactive({
     
     bechdel_sub %>%
-      ggvis( ~ year, ~ averageRating) %>% 
+      ggvis( ~ year, ~ averageRating, key := ~id) %>% 
       layer_points(size := 50, size.hover := 200,
-                   fillOpacity := 0.2, fillOpacity.hover := 0.5,
-                   stroke = ~rating) %>% 
+                   fillOpacity := 0.4, fillOpacity.hover := 0.8,
+                   fill = ~factor(rating)) %>% 
+      add_tooltip(b_tooltip,"hover") %>% 
+     
+      add_axis("x", title = "Year Released") %>%
+      add_axis("y", title = "Average IMDB Rating") %>%
+      add_legend("fill", title = "Bechdel Score", values = c("0", "1", "2", "3")) %>%
+      scale_nominal("fill", domain = c("0", "1", "2", "3"),
+                    range = c("red", "orange", "green", "blue")) %>%
       set_options(width = 1000, height = 600)
+      
+      
       
     
   })
