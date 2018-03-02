@@ -14,7 +14,7 @@ shinyUI(
   fluidPage(
   
   # Application title
-  titlePanel("How Hollywood scores on Bechdel Test"),
+  titlePanel("Grading Hollywood: The Bechdel Test"),
   fluidRow(
     column(3,
       wellPanel(  
@@ -25,20 +25,18 @@ shinyUI(
       sliderInput("year", "Year Released", 1890, 2018, value = c(1950, 2014)),
       sliderInput("runtimeMinutes", "Run Time in Mins", 1, 400, value = c(1, 200)),
       sliderInput("averageRating", "IMDB Rating", 1, 10, value = c(4, 9)),
-      sliderInput("numVotes", "Minimum number of Votes",10, 2000000, value = c(800,800000)),
-      selectInput("gender", "Gender of Director", c("All", "male", "female")),
+      sliderInput("numVotes", "Minimum number of Votes",0, 2000000, value = c(800,800000)),
+      selectInput("gender", "Gender of Director", c("All", "male", "female"),selected = 'All'),
       selectInput("genres", "Genre (a movie can have multiple genres)",
                   c("All", "Action", "Adventure", "Animation", "Biography", "Comedy",
                     "Crime", "Documentary", "Drama", "Family", "Fantasy", "History",
                     "Horror", "Music", "Musical", "Mystery", "Romance", "Sci-Fi",
-                    "Short", "Sport", "Thriller", "War", "Western")),
+                    "Short", "Sport", "Thriller", "War", "Western"),selected = 'All'),
       selectInput("titleType", "Title Type",c("All", "movie", "short", "video", 
-                  "tvMiniSeries" ,"tvMovie", "tvSeries", "tvShort", "tvEpisode","videoGame"))
+                  "tvMiniSeries" ,"tvMovie", "tvSeries", "tvShort", "tvEpisode","videoGame"),selected = 'All')
       
-    ),
-    wellPanel(
-    selectInput("yvar", "Y-axis variable", axis_vars, selected = "averageRating")
-    ),
+    )),
+   
   column(9,
     
     # Show a plot of the generated distribution
@@ -49,7 +47,7 @@ shinyUI(
              textOutput("n_b_sum"))
         )
       )
-    )
+    
   )
 ))
 

@@ -75,7 +75,7 @@ rating_bechdel <- as.data.frame(rating_bechdel)
 bechdel_merge3$year <- as.numeric(bechdel_merge3$year) 
 
 bechdel_f <- bechdel_merge3 %>% 
-  filter(gender == 'female')
+  filter(gender %in% 'female')
 bechdel_m <- bechdel_merge3 %>% 
   filter(gender == 'male')
 # https://austinwehrwein.com/post/bechdel/
