@@ -93,7 +93,7 @@ shinyServer(function(input, output, session) {
       add_legend("fill", title = "Bechdel Score", values = c("0", "1", "2", "3") , properties = legend_props(labels = list(fontSize = 15),title = list(fontSize = 15))) %>%
       scale_nominal("fill", domain = c("0", "1", "2", "3"),
                     range = c("magenta", "red", "orange", "blue")) %>%
-      set_options(width = 1000, height = 635)
+      set_options(width = 1100, height = 635)
       
       
       
