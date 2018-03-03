@@ -87,11 +87,11 @@ shinyServer(function(input, output, session) {
                    fill = ~factor(rating)) %>% 
       add_tooltip(b_tooltip,"hover") %>% 
      
-      add_axis("x", title = "Year Released") %>%
-      add_axis("y", title = "Average IMDB Rating") %>%
-      add_legend("fill", title = "Bechdel Score", values = c("0", "1", "2", "3")) %>%
+      add_axis("x", title = "Year Released", title_offset = 50, properties = axis_props(labels = list(fontSize = 15),title = list(fontSize = 20))) %>%
+      add_axis("y", title = "Average IMDB Rating", title_offset = 50, properties = axis_props(labels = list(fontSize = 15),title = list(fontSize = 20))) %>%
+      add_legend("fill", title = "Bechdel Score", values = c("0", "1", "2", "3") , properties = legend_props(labels = list(fontSize = 15))) %>%
       scale_nominal("fill", domain = c("0", "1", "2", "3"),
-                    range = c("red", "orange", "green", "blue")) %>%
+                    range = c("magenta", "red", "orange", "blue")) %>%
       set_options(width = 1000, height = 600)
       
       
@@ -102,7 +102,7 @@ shinyServer(function(input, output, session) {
   vis %>% bind_shiny("plot")
   
   output$total <- renderText({ nrow(bechdel_sub())})
-  output$pass <- renderText({ sprintf(((nrow(bechdel_sub() %>% filter(rating == 3))/nrow(bechdel_sub())) * 100), fmt='%.0f') })
-  output$fail <- renderText({ sprintf(((nrow(bechdel_sub() %>% filter(rating < 3))/nrow(bechdel_sub())) * 100), fmt='%.0f') })
+  output$pass <- renderText({ paste(sprintf(((nrow(bechdel_sub() %>% filter(rating == 3))/nrow(bechdel_sub())) * 100), fmt='%.0f'),' %') })
+  output$fail <- renderText({ paste(sprintf(((nrow(bechdel_sub() %>% filter(rating < 3))/nrow(bechdel_sub())) * 100), fmt='%.0f'),' %') })
   
 })

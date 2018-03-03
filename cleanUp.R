@@ -15,6 +15,7 @@ bechdel_scores <- read_json('rawData/bechdel_scores', simplifyVector = TRUE)
 ratings <- read_tsv('rawData/title.ratings.tsv')
 name <- read_tsv('rawData/name.basics.tsv')
 crew <- read_tsv('rawData/title.crew.tsv')
+dollars <- read_csv('rawData/movies_metadata.csv')
 # principals <- read_tsv('rawData/title.principals.tsv')
 title <- read_tsv('rawData/title.basics.tsv')
 # https://pudding.cool/2017/03/bechdel/#methodology
@@ -130,22 +131,9 @@ bechdel_merge3 %>%
   #               range = c("orange", "#aaa")) 
   # set_options(width = 500, height = 500)
 
-ui <- fluidPage(
-  ggvisOutput("plot")
-)
+dollars <- select(dollars, budget,revenue,imdb_id)
+dollars$tconst <- dollars$imdb_id
+bechdel_merge4 <- merge(bechdel_merge3,dollars, by='tconst')
 
-server <- function(input, output) {
-  
-  bechdel_merge3 %>%
-    ggvis( ~ year, ~ averageRating) %>% 
-    layer_points() %>% 
-    add_tooltip(bechdel_merge3()$title, "hover") %>% 
-    add_axis("x", title = 'rating') %>%
-    add_axis("y", title = 'year') %>%
-    add_legend("stroke", title = "gender:", values = c("male", "female")) 
-    
-    add_tooltip(function(bechdel_merge3) { paste0("title: ", bechdel_merge3()$title) }) %>%
-     bind_shiny("plot")
-}
-
-shinyApp(ui = ui, server = server)
+glimpse(dollars)
+bechdel_merge4 %>% filter(revenue>0) %>% count()

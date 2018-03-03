@@ -22,7 +22,7 @@ shinyUI(
   # Sidebar with a slider input for number of bins 
   # sidebarLayout(
     # sidebarPanel(
-      sliderInput("year", "Year Released", 1890, 2018, value = c(1950, 2014)),
+      sliderInput("year", "Year Released", 1890, 2018, value = c(1950, 2014), sep = ''),
       sliderInput("runtimeMinutes", "Run Time in Mins", 1, 400, value = c(1, 200)),
       sliderInput("averageRating", "IMDB Rating", 1, 10, value = c(4, 9)),
       sliderInput("numVotes", "Minimum number of Votes",0, 2000000, value = c(800,800000)),
@@ -41,17 +41,24 @@ shinyUI(
     
     # Show a plot of the generated distribution
     # mainPanel(
-      ggvisOutput("plot"),
-      wellPanel(
-        span("Total movies selected:",
-             textOutput("total")),
-        span("Total movies passing:",
-             textOutput("pass")),
-        span("Total movies failing:",
-             textOutput("fail"))
-        )
+    wellPanel(
+      # tags$div(
+      #   HTML(paste("Total movies selected: ", textOutput("total")
+      #     # "This text is ", tags$span(style="color:red", "red"), sep = ""))
+      # )))
+      tags$div(
+           HTML(paste("Total movies selected:",
+           textOutput("total"),
+      "Pass:",
+      tags$span(style="color:blue",textOutput("pass")),
+      "Fail:",
+      tags$span(style="color:red",textOutput("fail"))
+    ))),
+      ggvisOutput("plot")
+      
       )
     
+  )
   )
 ))
 
