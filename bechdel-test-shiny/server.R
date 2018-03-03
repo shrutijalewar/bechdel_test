@@ -21,8 +21,9 @@ glimpse(bechdel)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
-   
+
   bechdel_sub <- reactive({
+  
     minRuntime <- input$runtimeMinutes[1]
     maxRuntime <- input$runtimeMinutes[2]
     minAvgRate <- input$averageRating[1]
@@ -87,12 +88,12 @@ shinyServer(function(input, output, session) {
                    fill = ~factor(rating)) %>% 
       add_tooltip(b_tooltip,"hover") %>% 
      
-      add_axis("x", title = "Year Released", title_offset = 50, properties = axis_props(labels = list(fontSize = 15),title = list(fontSize = 20))) %>%
-      add_axis("y", title = "Average IMDB Rating", title_offset = 50, properties = axis_props(labels = list(fontSize = 15),title = list(fontSize = 20))) %>%
-      add_legend("fill", title = "Bechdel Score", values = c("0", "1", "2", "3") , properties = legend_props(labels = list(fontSize = 15))) %>%
+      add_axis("x", title = "Year Released", format = '####', title_offset = 50, properties = axis_props(labels = list(fontSize = 15),title = list(fontSize = 18))) %>%
+      add_axis("y", title = "Average imdb Rating", title_offset = 50, properties = axis_props(labels = list(fontSize = 15),title = list(fontSize = 18))) %>%
+      add_legend("fill", title = "Bechdel Score", values = c("0", "1", "2", "3") , properties = legend_props(labels = list(fontSize = 15),title = list(fontSize = 15))) %>%
       scale_nominal("fill", domain = c("0", "1", "2", "3"),
                     range = c("magenta", "red", "orange", "blue")) %>%
-      set_options(width = 1000, height = 600)
+      set_options(width = 1000, height = 635)
       
       
       
