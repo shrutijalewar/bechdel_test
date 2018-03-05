@@ -67,11 +67,11 @@ shinyServer(function(input, output, session) {
   })
   
   b_tooltip <- function(x) {
-    reactive({print(x$id)})
+    reactive({print(x$UID)})
     if(is.null(x)) return(NULL)
-    if (is.null(x$id)) return(NULL)
+    if (is.null(x$UID)) return(NULL)
     
-    movie <- bechdel[bechdel$id == x$id, ]
+    movie <- bechdel[bechdel$UID == x$UID, ]
     paste0("<b>", movie$title, "</b><br>",
            movie$year, "<br>",
            "Bechdel Score: ", movie$rating,"<br>",
@@ -80,20 +80,28 @@ shinyServer(function(input, output, session) {
   }
   
   vis <- reactive({
+    # Lables for axes
+    xvar_name <- names(axis_vars)[axis_vars == input$xvar]
+    yvar_name <- names(axis_vars)[axis_vars == input$yvar]
+    
+    # Normally we could do something like props(x = ~BoxOffice, y = ~Reviews),
+    # but since the inputs are strings, we need to do a little more work.
+    xvar <- prop("x", as.symbol(input$xvar))
+    yvar <- prop("y", as.symbol(input$yvar))
     
     bechdel_sub %>%
-      ggvis( ~ year, ~ averageRating, key := ~id) %>% 
+      ggvis( x = xvar, y = yvar, key := ~UID) %>% 
       layer_points(size := 50, size.hover := 200,
                    fillOpacity := 0.4, fillOpacity.hover := 0.8,
                    fill = ~factor(rating)) %>% 
       add_tooltip(b_tooltip,"hover") %>% 
      
-      add_axis("x", title = "Year Released", format = '####', title_offset = 50, properties = axis_props(labels = list(fontSize = 15),title = list(fontSize = 18))) %>%
-      add_axis("y", title = "Average imdb Rating", title_offset = 50, properties = axis_props(labels = list(fontSize = 15),title = list(fontSize = 18))) %>%
+      add_axis("x", title = xvar_name, format = '####', title_offset = 50, properties = axis_props(labels = list(fontSize = 15),title = list(fontSize = 18))) %>%
+      add_axis("y", title = yvar_name, title_offset = 50, properties = axis_props(labels = list(fontSize = 15),title = list(fontSize = 18))) %>%
       add_legend("fill", title = "Bechdel Score", values = c("0", "1", "2", "3") , properties = legend_props(labels = list(fontSize = 15),title = list(fontSize = 15))) %>%
       scale_nominal("fill", domain = c("0", "1", "2", "3"),
                     range = c("magenta", "red", "orange", "blue")) %>%
-      set_options(width = 1100, height = 635)
+      set_options(width = 1100, height = 795)
       
       
       

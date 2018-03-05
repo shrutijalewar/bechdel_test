@@ -53,10 +53,12 @@ str(gender_pred)
 # Merging the gender into the main file
 bechdel_merge3 <- merge(bechdel_merge2, gender_pred, by= 'Firstname')
 glimpse(bechdel_merge3)
-bechdel <- select(bechdel_merge3, tconst, nconst, rating, id, title, year, averageRating, numVotes, titleType, primaryTitle, originalTitle, 
-                  isAdult, runtimeMinutes, genres, Firstname, Lastname, gender)
-write_tsv(bechdel_merge3, 'data/bechdel_merge.tsv')
-write_tsv(bechdel, 'data/bechdel.tsv')
+
+bechdel_merge4$UID <- seq.int(nrow(bechdel_merge4))
+bechdel <- select(bechdel_merge4, UID, tconst, nconst, rating, id, title, year, averageRating, numVotes, titleType, primaryTitle, originalTitle, 
+                  isAdult, runtimeMinutes, genres, Firstname, Lastname, gender, revenue, budget)
+write_tsv(bechdel_merge3, 'bechdel-test-shiny/data/bechdel_merge.tsv')
+write_tsv(bechdel, 'bechdel-test-shiny/data/bechdel.tsv')
 bechdel_merge3 <- read_tsv('bechdel-test-shiny/data/bechdel_merge.tsv')
 rating_bechdel <- bechdel_merge3 %>%
     group_by(rating,gender) %>%
@@ -137,3 +139,18 @@ bechdel_merge4 <- merge(bechdel_merge3,dollars, by='tconst')
 
 glimpse(dollars)
 bechdel_merge4 %>% filter(revenue>0) %>% count()
+
+
+bechdel_merge4 %>%
+  ggvis( ~ year, ~ revenue, key := ~id) %>% 
+  layer_points(size := 50, size.hover := 200,
+               fillOpacity := 0.4, fillOpacity.hover := 0.8,
+               fill = ~factor(rating)) %>% 
+  # add_tooltip(b_tooltip,"hover") %>% 
+  
+  add_axis("x", title = "Year Released", format = '####', title_offset = 50, properties = axis_props(labels = list(fontSize = 15),title = list(fontSize = 18))) %>%
+  add_axis("y", title = "Average imdb Rating", title_offset = 50, properties = axis_props(labels = list(fontSize = 15),title = list(fontSize = 18))) %>%
+  add_legend("fill", title = "Bechdel Score", values = c("0", "1", "2", "3") , properties = legend_props(labels = list(fontSize = 15),title = list(fontSize = 15))) %>%
+  scale_nominal("fill", domain = c("0", "1", "2", "3"),
+                range = c("magenta", "red", "orange", "blue")) %>%
+  set_options(width = 1100, height = 635)

@@ -40,6 +40,8 @@ shinyUI(
       sliderInput("runtimeMinutes", "Run Time in Mins", 1, 400, value = c(1, 200)),
       sliderInput("averageRating", "IMDB Rating", 1, 10, value = c(4, 9)),
       sliderInput("numVotes", "Minimum number of Votes",0, 2000000, value = c(800,800000)),
+      selectInput("xvar", "X-axis variable", axis_vars, selected = "year"),
+      selectInput("yvar", "Y-axis variable", axis_vars, selected = "numVotes"),
       selectInput("gender", "Gender of Director", c("All", "male", "female"),selected = 'All'),
       selectInput("genres", "Genre (a movie can have multiple genres)",
                   c("All", "Action", "Adventure", "Animation", "Biography", "Comedy",
