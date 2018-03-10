@@ -8,6 +8,7 @@
 #
 library(shiny)
 library(shinythemes)
+library(ggvis)
 
 # Define UI for application that draws a histogram
 shinyUI(

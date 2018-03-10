@@ -12,12 +12,8 @@ library("ggvis")
 library("tidyverse")
 library("dplyr")
 
-# Set up WD
-setwd('/Users/ssharma/code/nss-ds/bechdel_test')
-
 # Read in the cleaned up data file as df.
-bechdel <- read_tsv('bechdel-test-shiny/data/bechdel.tsv')
-glimpse(bechdel)
+bechdel <- read_tsv('./data/bechdel.tsv')
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
